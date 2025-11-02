@@ -43,6 +43,7 @@ const COLUMNS: ColumnConfig[] = [
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -55,19 +56,25 @@ export default function Home() {
   }, []);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term")!.innerHTML = searchTerm;
+    const value = e.target.value;
+    setSearchTerm(value);
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
+      // Case-insensitive search for better UX
+      const lowerSearchTerm = value.toLowerCase();
+
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience === Number(searchTerm)
+        advocate.firstName.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.lastName.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.city.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.degree.toLowerCase().includes(lowerSearchTerm) ||
+        // Search within the specialties array items
+        advocate.specialties.some((specialty) =>
+          specialty.toLowerCase().includes(lowerSearchTerm)
+        ) ||
+        // Convert number to string for partial matching (e.g., "1" matches "10")
+        advocate.yearsOfExperience.toString().includes(value)
       );
     });
 
@@ -76,6 +83,7 @@ export default function Home() {
 
   const onClick = () => {
     console.log(advocates);
+    setSearchTerm("");
     setFilteredAdvocates(advocates);
   };
 
@@ -86,10 +94,12 @@ export default function Home() {
       <br />
       <div>
         <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
+        <p>Searching for: {searchTerm}</p>
+        <input
+          style={{ border: "1px solid black" }}
+          value={searchTerm}
+          onChange={onChange}
+        />
         <button onClick={onClick}>Reset Search</button>
       </div>
       <br />
