@@ -2,9 +2,47 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * Advocate type definition matching the database schema
+ * This ensures type safety when working with advocate data
+ */
+type Advocate = {
+  id?: number; // mock data may not have IDs
+  firstName: string;
+  lastName: string;
+  city: string;
+  degree: string;
+  specialties: string[];
+  yearsOfExperience: number;
+  phoneNumber: number;
+  createdAt?: Date;
+};
+
+/**
+ * Column configuration for the advocates table
+ * 1. Source of truth
+ * 2. Easily reorder columns
+ * 3. Easy to add/remove columns
+ * 4. Type-safe column keys
+ */
+type ColumnConfig = {
+  key: keyof Advocate;
+  label: string;
+};
+
+const COLUMNS: ColumnConfig[] = [
+  { key: "firstName", label: "First Name" },
+  { key: "lastName", label: "Last Name" },
+  { key: "city", label: "City" },
+  { key: "degree", label: "Degree" },
+  { key: "specialties", label: "Specialties" },
+  { key: "yearsOfExperience", label: "Years of Experience" },
+  { key: "phoneNumber", label: "Phone Number" },
+];
+
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [advocates, setAdvocates] = useState<Advocate[]>([]);
+  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -16,7 +54,7 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
 
     document.getElementById("search-term").innerHTML = searchTerm;
@@ -58,29 +96,50 @@ export default function Home() {
       <br />
       <table>
         <thead>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>City</th>
-          <th>Degree</th>
-          <th>Specialties</th>
-          <th>Years of Experience</th>
-          <th>Phone Number</th>
+          <tr>
+            {/*
+              Generate table headers from COLUMNS configuration
+              This keeps headers in sync with the data columns below
+            */}
+            {COLUMNS.map((col) => (
+              <th key={col.key}>{col.label}</th>
+            ))}
+          </tr>
         </thead>
         <tbody>
-          {filteredAdvocates.map((advocate) => {
+          {filteredAdvocates.map((advocate, index) => {
+            /**
+             * Use advocate.id as the key if available (from database)
+             * Fall back to index for mock data without IDs
+             * Keys help React efficiently update the DOM when the list changes
+             */
+            const rowKey = advocate.id ?? `advocate-${index}`;
+
             return (
-              <tr>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s) => (
-                    <div>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
+              <tr key={rowKey}>
+                {/*
+                  Generate table cells dynamically from COLUMNS configuration
+                  This eliminates repetitive code and keeps data in sync with headers
+                */}
+                {COLUMNS.map((col) => {
+                  const value = advocate[col.key];
+
+                  return (
+                    <td key={col.key}>
+                      {/*
+                        Handle array values (specialties) differently from primitives
+                        Each specialty gets its own div with a unique key
+                      */}
+                      {Array.isArray(value) ? (
+                        value.map((item, idx) => (
+                          <div key={`${rowKey}-${col.key}-${idx}`}>{item}</div>
+                        ))
+                      ) : (
+                        value
+                      )}
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}
