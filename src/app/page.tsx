@@ -67,7 +67,7 @@ export default function Home() {
         advocate.city.includes(searchTerm) ||
         advocate.degree.includes(searchTerm) ||
         advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.yearsOfExperience === Number(searchTerm)
       );
     });
 
