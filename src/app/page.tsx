@@ -99,7 +99,6 @@ export default function Home() {
           <tr>
             {/*
               Generate table headers from COLUMNS configuration
-              This keeps headers in sync with the data columns below
             */}
             {COLUMNS.map((col) => (
               <th key={col.key}>{col.label}</th>
@@ -111,7 +110,6 @@ export default function Home() {
             /**
              * Use advocate.id as the key if available (from database)
              * Fall back to index for mock data without IDs
-             * Keys help React efficiently update the DOM when the list changes
              */
             const rowKey = advocate.id ?? `advocate-${index}`;
 
@@ -119,21 +117,18 @@ export default function Home() {
               <tr key={rowKey}>
                 {/*
                   Generate table cells dynamically from COLUMNS configuration
-                  This eliminates repetitive code and keeps data in sync with headers
                 */}
                 {COLUMNS.map((col) => {
                   const value = advocate[col.key];
 
                   return (
                     <td key={col.key}>
-                      {/*
-                        Handle array values (specialties) differently from primitives
-                        Each specialty gets its own div with a unique key
-                      */}
                       {Array.isArray(value) ? (
                         value.map((item, idx) => (
                           <div key={`${rowKey}-${col.key}-${idx}`}>{item}</div>
                         ))
+                      ) : value instanceof Date ? (
+                        value.toLocaleString()
                       ) : (
                         value
                       )}
