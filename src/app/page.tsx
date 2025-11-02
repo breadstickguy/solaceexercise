@@ -61,7 +61,6 @@ export default function Home() {
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
-      // Case-insensitive search for better UX
       const lowerSearchTerm = value.toLowerCase();
 
       return (
@@ -69,11 +68,9 @@ export default function Home() {
         advocate.lastName.toLowerCase().includes(lowerSearchTerm) ||
         advocate.city.toLowerCase().includes(lowerSearchTerm) ||
         advocate.degree.toLowerCase().includes(lowerSearchTerm) ||
-        // Search within the specialties array items
         advocate.specialties.some((specialty) =>
           specialty.toLowerCase().includes(lowerSearchTerm)
         ) ||
-        // Convert number to string for partial matching (e.g., "1" matches "10")
         advocate.yearsOfExperience.toString().includes(value)
       );
     });
