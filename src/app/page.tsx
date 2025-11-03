@@ -42,20 +42,16 @@ export default function Home() {
   };
 
   return (
-    <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
+    <main className="m-6">
+      <h1 className="mb-8">Solace Advocates</h1>
+      <div className="mb-8">
         <p>Search</p>
         <p>
           Searching for: <span id="search-term"></span>
         </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
+        <input className="border border-black" onChange={onChange} />
         <button onClick={onClick}>Reset Search</button>
       </div>
-      <br />
-      <br />
       <table>
         <thead>
           <th>First Name</th>
