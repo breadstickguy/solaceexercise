@@ -91,30 +91,58 @@ export default function Home() {
   };
 
   return (
-    <main className="m-6">
-      <h1 className="mb-8">Solace Advocates</h1>
-      <div className="mb-8">
-        <p>Search</p>
-        <p>Searching for: {searchTerm}</p>
-        <input
-          className="border border-black"
-          value={searchTerm}
-          onChange={onChange}
-        />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <table>
-        <thead>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">
+          Solace Advocates
+        </h1>
+
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <label htmlFor="search-input" className="block text-sm font-medium text-gray-700 mb-2">
+            Search Advocates
+          </label>
+          <div className="flex gap-3">
+            <input
+              id="search-input"
+              type="text"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+              placeholder="Search by name, city, degree, or specialty..."
+              value={searchTerm}
+              onChange={onChange}
+            />
+            <button
+              onClick={onClick}
+              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 active:bg-blue-800 transition shadow-sm"
+            >
+              Reset
+            </button>
+          </div>
+          {searchTerm && (
+            <p className="mt-3 text-sm text-gray-600">
+              Searching for: <span className="font-semibold text-gray-800">{searchTerm}</span>
+            </p>
+          )}
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <table className="w-full">
+        <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
             {/*
               Generate table headers from COLUMNS configuration
             */}
             {COLUMNS.map((col) => (
-              <th scope="col" key={col.key}>{col.label}</th>
+              <th
+                scope="col"
+                key={col.key}
+                className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
+              >
+                {col.label}
+              </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200">
           {filteredAdvocates.map((advocate, index) => {
             /**
              * Use advocate.id as the key if available (from database)
@@ -123,7 +151,7 @@ export default function Home() {
             const rowKey = advocate.id ?? `advocate-${index}`;
 
             return (
-              <tr key={rowKey}>
+              <tr key={rowKey} className="hover:bg-gray-50 transition">
                 {/*
                   Generate table cells dynamically from COLUMNS configuration
                 */}
@@ -131,11 +159,18 @@ export default function Home() {
                   const value = advocate[col.key];
 
                   return (
-                    <td key={col.key}>
+                    <td key={col.key} className="px-6 py-4 text-sm text-gray-900">
                       {Array.isArray(value) ? (
-                        value.map((item, idx) => (
-                          <div key={`${rowKey}-${col.key}-${idx}`}>{item}</div>
-                        ))
+                        <div className="flex flex-wrap gap-1">
+                          {value.map((item, idx) => (
+                            <span
+                              key={`${rowKey}-${col.key}-${idx}`}
+                              className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
                       ) : value instanceof Date ? (
                         value.toLocaleString()
                       ) : (
@@ -149,6 +184,8 @@ export default function Home() {
           })}
         </tbody>
       </table>
+        </div>
+      </div>
     </main>
   );
 }
