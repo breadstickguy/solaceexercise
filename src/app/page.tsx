@@ -43,10 +43,8 @@ export default function Home() {
 
   return (
     <main className="m-6">
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
+      <h1 className="mb-8">Solace Advocates</h1>
+      <div className="mb-8">
         <p>Search</p>
         <p>
           Searching for: <span id="search-term"></span>
@@ -54,8 +52,6 @@ export default function Home() {
         <input className="border border-black" onChange={onChange} />
         <button onClick={onClick}>Reset Search</button>
       </div>
-      <br />
-      <br />
       <table>
         <thead>
           <th>First Name</th>
