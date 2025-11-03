@@ -114,7 +114,7 @@ export default function Home() {
               Generate table headers from COLUMNS configuration
             */}
             {COLUMNS.map((col) => (
-              <th scope="col"key={col.key}>{col.label}</th>
+              <th scope="col" key={col.key}>{col.label}</th>
             ))}
           </tr>
         </thead>
